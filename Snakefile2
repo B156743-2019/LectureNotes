@@ -1,0 +1,26 @@
+sample=['6991']
+kmers=list(range(19,31))
+rule final:
+	output:"stats_kmer_10_to_30.txt"
+	input:expand("{s}_paired_k{kmer}_stats.txt",kmer=kmers,s=sample)
+	shell:
+		"""
+		grep 'N/L50 {input} > {output}
+		"""
+rule stats:
+	output:"{sample}_paired_k{kmer}_stats.txt"
+	input:"{sample}_paired_k{kmer}_contigs.fa"
+	shell:
+		"""stats.sh {input} > {output}
+		"""
+rule assemble:
+	output: "{sample}_paired_k{k}_contigs.fa"
+	input:  
+		read1 = "/localdisk/data/BPSM/Lecture19_AI/{sample}_1.fastq.gz",
+		read2 = "/localdisk/data/BPSM/Lecture19_AI/{sample}_2.fastq.gz"
+	shell:
+		"""velveth vout {wildcards.k} -shortPaired -fastq.gz -separate  {input.read1}  {input.read2}
+		velvetg vout
+		mv vout/contigs.fa {output}
+		"""
+
