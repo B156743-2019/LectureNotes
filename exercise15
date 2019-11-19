@@ -1,0 +1,87 @@
+#!/usr/bin/python3
+print('\nWelcome to ProAnalysis. \n\nIn your quest,\n\nMay the odds be ever in your favor\n')
+import re,glob,os,subprocess,shutil,sys,itertools,fileinput
+#Accession numbers
+
+#Here's a list of made-up gene accession numbers:
+#xkn59438, yhdck2, eihd39d9, chdsye847, hedle3455, xjhd53e, 45da, de37dp
+accs=['xkn59438', 'yhdck2', 'eihd39d9', 'chdsye847', 'hedle3455', 'xjhd53e', '45da', 'de37dp']
+#Write a program that will print only the accessions that satisfy the following criteria individually (i.e. treat each criterion separately):
+#contain the number 5
+for acc in accs:
+	if re.search('5',acc):
+		print(acc, 'contains number 5')
+#contain the letter d or e
+for acc in accs:
+	if re.search(r'[de]',acc):
+		print(acc, 'contains d or e')
+#contain the letters d and e in that order
+for acc in accs:
+	if re.search(r'de',acc):
+		print(acc, 'contains de')
+#contain the letters d and e in that order with a single letter between them
+for acc in accs:
+	if re.search(r'd.e',acc):
+		print(acc, 'contains d, one single letter, e')
+#contain both the letters d and e in any order
+for acc in accs:
+	if re.search(r'd',acc) and re.search(r'e',acc):
+		print(acc, 'contains d and e')
+#start with x or y
+for acc in accs:
+	if re.search(r'^[xy]',acc):
+		print(acc, 'starts with x or y')
+#start with x or y and end with e
+for acc in accs:
+	if re.search(r'^[xy]',acc) and re.search(r'e$',acc):
+		print(acc, 'starts with x or y and end with e')
+#contain three or more numbers in a row
+for acc in accs:
+	if re.search(r'[0-9]{3,}',acc) :
+		print(acc, 'contains 3 or more numbers in a row')
+#end with d followed by either a, r or p
+for acc in accs:
+	if re.search(r'd[a,r,p]$',acc) :
+		print(acc, 'ends with d followed by either a, r or p')
+
+#A file called long_dna.txt has been put in the following directory:
+#/localdisk/data/BPSM/Lecture15_AI
+#It contains a made-up DNA sequence.
+#What fragment lengths will we get if we digest the sequence with a novel restriction enzyme BpsmI, whose recognition site is ANT*AAT, where * indicates the position of the cut site.
+dna=open('long_dna.txt').read().replace('\n','')
+cutseq=re.split(r'A.TAAT',dna)
+for i in list(range(len(cutseq))):
+	if i ==0:
+		length=len(cutseq[i])+3
+	elif i==len(cutseq)-1:
+		length=len(cutseq[i])+3
+	else:
+		length=len(cutseq[i])+6
+	print('length of the',i+1,'th fragment is',length)
+#What will the fragment lengths be if we do a double digest with both BpsmI and BpsmII (whose recognition site is GCRW*TG)?
+def fragment_length(dna):
+	cut=[]
+	for cuts in re.finditer(r'GC[AG][AT]TG',dna):
+		cut+=[cuts.start()+4]
+	for cuts in re.finditer(r'A.TAAT',dna):
+		cut+=[cuts.start()+3]
+	cut+=[0]
+	cut+=[len(dna)]
+	cut.sort()
+	length=[]
+	for i in list(range(len(cut)-1)):
+		length+=[cut[i+1]-cut[i]]
+		print('the length of this fragment is', cut[i+1]-cut[i])
+#What are the sequences of the fragments themselves?
+def fragment(dna):
+	cut=[0,len(dna)]
+	for cuts in re.finditer(r'GC[AG][AT]TG',dna):
+		cut+=[cuts.start()+4]
+	for cuts in re.finditer(r'A.TAAT',dna):
+		cut+=[cuts.start()+3]
+	cut.sort()
+	length=[]
+	for i in list(range(len(cut)-1)):
+		length+=[dna[cut[i]:cut[i+1]]]
+		print('the length of this fragment is', cut[i+1]-cut[i])
+	return length

@@ -1,0 +1,64 @@
+#!/usr/bin/python3
+import glob,os,subprocess,shutil,sys
+#Q1 Amino acid percentages, part one
+#Write a function that takes two arguments (a protein sequence and an amino acid residue code) and returns the percentage of the protein that the amino acid makes up.
+def aa_percentages(pro,aa,n):
+	aa_per=round(pro.upper().count(aa.upper())/len(pro),n)*100
+	return aa_per
+#Q2 Amino acid percentages, part two
+#Modify the function from the previous exercise above so that it accepts a list of amino acid residues rather than a single one, and count these within the protein sequence.
+#If no list is given, the function should return the percentage of hydrophobic amino acid residues (i.e. amino acids A, I, L, M, F, W, Y, V).
+def aa_percentages(pro,aal):
+	per,hydrophobic=0,['A', 'I', 'L','M', 'F', 'W', 'Y', 'V']
+	if aal!='':
+		for aa in aal:
+			per+=round(pro.upper().count(aa.upper())/len(pro),5)*100
+	else:
+		for aa in hydrophobic:
+			per+=round(pro.upper().count(aa.upper())/len(pro),5)*100
+	return per
+#Q3 Write a function that will take a DNA sequence along with an optional threshold and return True or False to indicate whether the DNA sequence contains a high proportion of undetermined bases (i.e not A, T, G or C).
+def Percentage_TBD(seq):
+	per,base=1,['A','T','C','G']
+	for b in base:
+		per-=round(seq.upper().count(b)/len(seq),5)
+	return per
+#Q4 Kmer counting (again!)
+
+#K-mers are short DNA subsequences with length "k" bases, and are usually generated using the sliding window method we used in previous lecture exercises.
+
+#Write a function that, given any DNA sequence, will print all the k-mers (e.g. 4-mers) that occur more than n times.
+def Kmer(seq,size,n):
+	i,kmers,qualified=0,[],[]
+	while i < len(seq)-size:
+		kmers+=[seq[i:i+size]]
+		i+=1
+	for kmer in set(kmers):
+		if kmers.count(kmer)>= n:
+			qualified+=[kmer]
+	return qualified
+#Q5 Kmer counting (and again!)
+#Write a Python script/programme that, given any DNA sequence, will print a list of k-mers that occur more than some number of times.
+#The user should be asked to supply, on the command line, the following:
+#the sequence of interest
+#the kmer length for analysis
+#the threshold frequency of kmers found (i.e. the "more than this number" value)
+def Kmer(seq,size,n):
+	i,kmers,qualified=0,[],[]
+	while i < len(seq)-size:
+		kmers+=[seq[i:i+size]]
+		i+=1
+	for kmer in set(kmers):
+		if kmers.count(kmer)>= n:
+			qualified+=[kmer]
+	return qualified
+
+
+
+
+
+
+
+
+
+

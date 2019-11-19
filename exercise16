@@ -1,0 +1,93 @@
+#!/usr/bin/python3
+print('\nWelcome to ProAnalysis. \n\nIn your quest,\n\nMay the odds be ever in your favor\n\n(If you only want to use the analysis features, set sequence wanted as 0)\n')
+import glob,os,subprocess,shutil,sys,itertools,fileinput
+import matplotlib.pyplot as plt
+import numpy as np
+#Q1Use the ecoli.txt file and, using the code above as a starting point, make a chart which shows the AT content in a sliding window.
+ecoli=open('/localdisk/data/BPSM/Lecture16_AI/ecoli.txt').read().replace('\n','').upper()[0:1000000]
+window = 10000
+at=[]
+count=0
+for start in range(len(ecoli)-window):
+	count+=1
+	win=ecoli[start:start+window]
+	at.append((win.count('A')+win.count('T')) / window)
+
+plt.figure(figsize=(20,10))
+plt.plot(at, label="AT content",linewidth=3)
+plt.ylabel('Fraction of A,T')
+plt.xlabel('Position on genome')
+plt.title("Base composition in the E coli genome")
+plt.legend()
+plt.savefig("Lecture16_ATcontent.png",transparent=True)
+plt.show()
+
+#Q2 The alignment.txt file contains a multiple sequence alignment, one sequence per line. We want to draw a plot of protein conservation based on the alignment similarities, but without using plotcon!
+align=open('/localdisk/data/BPSM/Lecture16_AI/alignment.txt').read()#.replace('\n','').upper()[0:1000000]
+seqs=align.split('\n')
+bases=[]
+base=''
+for i in range(2013):
+	for seq in seqs:
+		base+=str(seq[i])
+	bases+=[base]
+	base=''
+
+def most_frequent(List):
+	return max(set(List), key = List.count) #find the most frequent element in a list
+similarity=[]
+for seq in bases:
+	seqlist=list(seq)
+	similarity.append(seq.count(most_frequent(seqlist))/len(seq))
+window=10
+counter=0
+averaged=[]
+for start in range(len(similarity)-window):
+	counter+=1
+	win=similarity[start:start+window]
+	averaged.append(np.mean(win))
+
+plt.figure(figsize=(20,10))
+plt.plot(averaged, label="Similarity",linewidth=3)
+plt.ylabel('Level of Conservation')
+plt.xlabel('Position on protein')
+plt.title("Conservation Plot")
+plt.legend()
+plt.savefig("Lecture16_conservation.png",transparent=True)
+plt.show()
+#A bette solution for Q2
+#Q2 The alignment.txt file contains a multiple sequence alignment, one sequence per line. We want to draw a plot of protein conservation based on the alignment similarities, but without using plotcon!
+align=open('/localdisk/data/BPSM/Lecture16_AI/alignment.txt').read()#.replace('\n','').upper()[0:1000000]
+seqs=align.split('\n')
+bases=[]
+base=''
+for i in range(2013):
+	for seq in seqs:
+		base+=str(seq[i])
+	bases+=[base]
+	base='' #make lists of each base
+
+def most_frequent(List):
+	return max(set(List), key = List.count) #find the most frequent element in a list
+
+similarity=[]
+for seq in bases:
+	seqlist=list(seq.replace('-',''))
+	similarity.append(1-(len(set(seqlist))-1)/len(seq))
+
+window=30
+counter=0
+averaged=[]
+for start in range(len(similarity)-window):
+	counter+=1
+	win=similarity[start:start+window]
+	averaged.append(np.mean(win))
+
+plt.figure(figsize=(20,10))
+plt.plot(averaged, label="Similarity",linewidth=3,color='c')
+plt.ylabel('Level of Conservation')
+plt.xlabel('Position on protein')
+plt.title("Conservation Plot")
+plt.legend()
+plt.savefig("Lecture16_conservation.png",transparent=True)
+plt.show()

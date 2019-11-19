@@ -1,0 +1,94 @@
+#!/usr/bin/python3
+print('\nWelcome to ProAnalysis. \n\nIn your quest,\n\nMay the odds be ever in your favor\n')
+import glob,os,subprocess,shutil,sys,itertools,fileinput
+#Q1 With the aid of a function and dictionary, write an interactive Python programme/script that will ask the user the following questions
+#What's your name?
+#How old are you?
+#What is your favourite colour?
+#Do you like Python?
+#The world is flat: True or False?
+#and then, based on their answers, make some comments back to them (this doesn't have to be at all serious, it's the methods used that we are trying out here....!)
+
+def Interogation():
+	name=input("What's your name?\n")
+	age=input('How old are you?\n')
+	colour=input('Favorite colour?\n')
+	python=input('Do you like python?\n')
+	flat=input('the world is flat: True or False?\n').upper()	
+	inter = { name : 'Hello '+name, age : age+' is young', colour : colour+' is classic', python : 'I agree with you. '+ python, 'TRUE' : 'prehistoric','FALSE' : 'basic' }
+	answers=[name,age,colour, python,flat]	
+	for answer in answers:
+		print(inter[answer])
+
+#Q2 DNA translation
+gencode = {
+'ATA':'I', 'ATC':'I', 'ATT':'I', 'ATG':'M',
+'ACA':'T', 'ACC':'T', 'ACG':'T', 'ACT':'T',
+'AAC':'N', 'AAT':'N', 'AAA':'K', 'AAG':'K',
+'AGC':'S', 'AGT':'S', 'AGA':'R', 'AGG':'R',
+'CTA':'L', 'CTC':'L', 'CTG':'L', 'CTT':'L',
+'CCA':'P', 'CCC':'P', 'CCG':'P', 'CCT':'P',
+'CAC':'H', 'CAT':'H', 'CAA':'Q', 'CAG':'Q',
+'CGA':'R', 'CGC':'R', 'CGG':'R', 'CGT':'R',
+'GTA':'V', 'GTC':'V', 'GTG':'V', 'GTT':'V',
+'GCA':'A', 'GCC':'A', 'GCG':'A', 'GCT':'A',
+'GAC':'D', 'GAT':'D', 'GAA':'E', 'GAG':'E',
+'GGA':'G', 'GGC':'G', 'GGG':'G', 'GGT':'G',
+'TCA':'S', 'TCC':'S', 'TCG':'S', 'TCT':'S',
+'TTC':'F', 'TTT':'F', 'TTA':'L', 'TTG':'L',
+'TAC':'Y', 'TAT':'Y', 'TAA':'_', 'TAG':'_',
+'TGC':'C', 'TGT':'C', 'TGA':'_', 'TGG':'W','TBD':'_,'}
+# Write a programme/script that will take any DNA sequence and translate it into protein using the translation table.
+def translation(seq):
+	i,polyp=0,''
+	strseq=str(seq).upper()
+	while i < len(strseq):
+		polyp+=gencode[strseq[i:i+3]]
+		i+=3
+	return polyp
+#What happens if the DNA sequence contains undetermined bases (e.g. N)?
+def translation(seq):
+	i,polyp=0,''
+	strseq=str(seq).upper()
+	while i < len(strseq):
+		codon=strseq[i:i+3]
+		if codon.replace('A','').replace('T','').replace('C','').replace('G','')!='':
+			codon='TBD'
+		polyp+=gencode[codon]
+		i+=3
+	return polyp
+#Can you generate a translation in all three "forward" frames (transcription is on the top strand, starting at base 1, 2, 3,.....,and n)?
+def translation(seq,n):
+	strseq=str(seq).upper()
+	for i in list(range(n)):#starting point
+		polyp=''
+		while i < len(strseq):
+			codon=strseq[i:i+3]
+			if codon.replace('A','').replace('T','').replace('C','').replace('G','')!='':
+				codon='TBD'
+			polyp+=gencode[codon]
+			i+=3
+		print(polyp)
+# Can you generate a translation in all three "reverse" frames (transcription is on the bottom strand, starting at base end, end-1, and end-2)?
+def translation(seq):
+	strseq=str(seq).upper()[::-1]#reverse the seq
+	for i in [0,1,2]:
+		polyp=''
+		while i < len(strseq):
+			codon=strseq[i:i+3]
+			if codon.replace('A','').replace('T','').replace('C','').replace('G','')!='':
+				codon='TBD'
+			if len(codon)==3:#ignore the last bit of seq if not come in multiples of 3
+				polyp+=gencode[codon]
+			i+=3
+		print(polyp)
+
+
+def filtering(files):
+	file_list=[]
+	for seq in files:
+		s=open(seq).read()
+		if s!='':
+			file_list+=[seq]
+	return file_list #removing empty files
+file_list=filtering(file_list)

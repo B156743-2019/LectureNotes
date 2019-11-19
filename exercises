@@ -1,0 +1,82 @@
+#!/bin/python3
+#Q1lis
+dna1=(open("input.txt")).read().split('\n') # create a list, each line is an element, from the file
+adaptor=dna1[0]
+adaptor=adaptor[:14] # get the adaptor sequence
+for dna in dna1:
+	dna=dna.replace(adaptor,'')
+	myfile = open(dna[:5]+'.txt','w') #create a new file
+	myfile.write(str(dna)+'\n'+str(len(dna))+'\n') # write the seq and the length to the file
+	myfile.close
+	print(dna)
+#Q2
+dna2=(open("genomic_dna2.txt")).read().rstrip() #remove the \n at the end
+exons=(open('exons.txt')).read().split('\n')
+exons=exons[:4]#remove \n at the end
+ex='X'
+for pos in exons:
+	pos=pos.split(',')
+	ex=ex+dna2[int(pos[0]):int(pos[1])] #extract the exons
+ex.replace('X','')
+print(ex)
+#Q3dna
+dna3=(open("AJ223353.fixed.fasta")).read()
+numb=list(range(0,len(dna3)))
+numb=numb[:len(dna3)-29]
+for numb in numb:
+	window_numb=dna3[int(numb):int(numb)+30]
+	print(window_numb) #(a)print each segment window to the screen
+	CG=window_numb.count('C')+window_numb.count('G')
+	percentage=CG/30*100
+	print('CG percentage is',percentage,'%') #(b) print the percentage GC content 
+	#myfile = open('AJ223353_'+str(numb)+'.fasta','w') #create a new file
+	#myfile.write('>gi|NA|gb|AJ223353|'+str(numb)+'~'+str(numb+30)+'\n'+str(window_numb)+'\n')#(c) create a fasta file for each
+	#myfile.close
+	myfile = open('AJ223353.fasta','a')
+	myfile.write('>gi|NA|gb|AJ223353|'+str(numb)+'~'+str(numb+30)+'\n'+str(window_numb)+'\n')
+	myfile.close #write to an individual file
+#===================================modification (d)===========================================
+dna3=(open("AJ223353.fixed.fasta")).read()
+numb=list(range(0,len(dna3)))
+for numb in numb:
+	if numb <= len(dna3)-29: # to include the partial sliding window segments that we get at the end of the sequence.
+		window_numb=dna3[int(numb):int(numb)+30]
+		print(window_numb) #(a)print each segment window to the screen
+		CG=window_numb.count('C')+window_numb.count('G')
+		percentage=CG/30*100
+		print('CG percentage is',percentage,'%') #(b) print the percentage GC content 
+		#myfile = open('AJ223353_'+str(numb)+'.fasta','w') #create a new file
+		#myfile.write('>gi|NA|gb|AJ223353|'+str(numb)+'~'+str(numb+30)+'\n'+str(window_numb)+'\n')#(c) create a fasta file for each
+		#myfile.close
+		myfile = open('AJ223353.fasta','a')
+		myfile.write('>gi|NA|gb|AJ223353|'+str(numb)+'~'+str(numb+30)+'\n'+str(window_numb)+'\n')
+		myfile.close #write to an individual file
+	else: # to include the partial sliding window segments that we get at the end of the sequence.
+		window_numb=dna3[int(numb):]
+		print(window_numb) #(a)print each segment window to the screen
+		CG=window_numb.count('C')+window_numb.count('G')
+		percentage=CG/30*100
+		print('CG percentage is',percentage,'%')
+#Q4
+#Write a script/programme which creates nine new 'size range' directories, one for sequences between 100 and 199 bases long, one for sequences between 200 and 299 bases long, etc., etc..
+dna4=(open("xaa.dna")).read().split('\n')
+for seq in dna4:
+	for i in list(range(10)):
+		if len(seq)>=100+i*100 and len(seq)<=199+i*100:
+			myfile = open('length_'+str(100+i*100)+'_to'+str(199+i*100),'a')
+			myfile.write(seq+'\n')
+			myfile.close
+#==============================do this for all the dna files=================================
+file_temp=list(glob.glob('./*.dna')) 
+file_list=[] 
+for e in file_temp: 
+	e=str(e).replace('./','') 
+	file_list=file_list+[e] 
+for dna_file in file_list:
+	dna=(open(dna_file)).read().split('\n')
+	for seq in dna
+		for i in list(range(10)):
+			if len(seq)>=100+i*100 and len(seq)<=199+i*100:
+		for 		myfile = open('length_'+str(100+i*100)+'_to'+str(199+i*100),'a')
+				myfile.write(seq+'\n')
+				myfile.close
