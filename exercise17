@@ -1,0 +1,33 @@
+#!/usr/bin/python3
+print('\nWelcome to ProAnalysis. \n\nIn your quest,\n\nMay the odds be ever in your favor\n\n')
+import os, sys
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+#how many fungal species have genomes bigger than 100Mb? What are their names?
+eu = pd.read_csv('/localdisk/data/BPSM/Lecture17_AI/eukaryotes.txt', sep="\t", na_values=['-'])
+#Index(['#Organism/Name', 'TaxID', 'BioProject Accession', 'BioProject ID',
+#       'Group', 'SubGroup', 'Size (Mb)', 'GC%', 'Assembly Accession',
+#       'Replicons', 'WGS', 'Scaffolds', 'Genes', 'Proteins', 'Release Date',
+#       'Modify Date', 'Status', 'Center', 'BioSample Accession'],
+#        dtype='object')
+speciescount=eu[(eu['Group'] == 'Fungi')& (eu['Size (Mb)'] > 100)]['Size (Mb)'].count()
+speciesnames=eu[(eu['Group'] == 'Fungi')& (eu['Size (Mb)'] > 100)]['#Organism/Name']#the names of those 
+#how many of each Kingdom/group (plants, animals, fungi and protists) have been sequenced?
+kingcount=[]
+for king in set(eu.sort_values('Group')['Group']):
+	kingcount+=[king,eu[(eu['Group'] == king)]['#Organism/Name'].count()]
+#output: ['Fungi', 4985, 'Other', 44, 'Plants', 1087, 'Animals', 2563, 'Protists', 788]
+#which Heliconius species genomes have been sequenced?
+Helicount=eu.apply(lambda x:(x['#Organism/Name']).split(' ')[0],axis=1).str.contains('Heliconius').count()
+#which sequencing centre has sequenced the most plant genomes? the most insect genomes?
+eu[(eu['Group'] == 'Plants')]['Center'].value_counts().head(1)
+eu[(eu['SubGroup'] == 'Insects')]['Center'].value_counts().head(1)
+#add a column giving the number of proteins per gene. Which genomes have at least 10% more proteins than genes?
+pvsg=eu['protein_per_gene']=(eu['Proteins']/eu['Genes'])
+moreprotein=eu[eu['protein_per_gene']> 1.1]
+#draw a vertical bar plot which shows the number of genes, number of proteins, and number of genes per protein for all genomes with at least twice as many proteins as genes. Use the secondary_y argument to display the number of genes per protein on a different y axis.
+ax=eu[eu['protein_per_gene']> 2][['Genes', 'Proteins','protein_per_gene']].plot.bar(figsize=(10,8), fontsize=6,secondary_y = ['protein_per_gene']) #'Genes', 'Proteins',
+plt.yticks(fontsize=6)#plt.savefig("Lecture17_02.png",transparent=True)
+plt.show()
