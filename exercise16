@@ -64,7 +64,7 @@ base=''
 for i in range(2013):
 	for seq in seqs:
 		base+=str(seq[i])
-	bases+=[base]
+	bases+=[base]#should have made it into a function, and do not define [] and '' outside, not elegant
 	base='' #make lists of each base
 
 def most_frequent(List):
